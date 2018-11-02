@@ -28,7 +28,7 @@
     <properties>
         <git.commit>${CIRCLE_SHA1}</git.commit>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ontopVersion>3.0.0-beta-2</ontopVersion>
+        <ontopVersion>3.0.0-beta-3-SNAPSHOT</ontopVersion>
         <activationVersion>1.1.1</activationVersion>
         <jacksonVersion>2.9.5</jacksonVersion>
         <jdkVersion>1.8</jdkVersion>
@@ -40,12 +40,14 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>local-repo</id>
+            <url>file://${project.basedir}/local_repo</url>
+        </repository>
+    </repositories>
+
     <dependencies>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jacksonVersion}</version>
-        </dependency>
         <dependency>
             <groupId>it.unibz.inf.ontop</groupId>
             <artifactId>ontop-system-sql-owlapi</artifactId>
@@ -56,6 +58,12 @@
             <artifactId>ontop-rdf4j</artifactId>
             <version>${ontopVersion}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jacksonVersion}</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>

@@ -18,8 +18,10 @@
 package org.mediawiki.sparql.mwontop.sql;
 
 import it.unibz.inf.ontop.dbschema.*;
+import it.unibz.inf.ontop.injection.OntopModelConfiguration;
 import it.unibz.inf.ontop.injection.OntopSQLOWLAPIConfiguration;
 import it.unibz.inf.ontop.injection.OntopSystemConfiguration;
+import it.unibz.inf.ontop.model.type.TypeFactory;
 import it.unibz.inf.ontop.rdf4j.repository.OntopRepository;
 import org.apache.commons.rdf.rdf4j.RDF4J;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -89,7 +91,7 @@ public final class RepositoryFactory {
 
         Properties prop = new Properties();
         prop.put( "ontop.completeProvidedMetadata", "false" );
-        prop.put( "it.unibz.inf.ontop.answering.reformulation.unfolding.QueryUnfolder", "org.mediawiki.sparql.mwontop.utils.SiteSpecificUnfolder" );
+//        prop.put( "it.unibz.inf.ontop.answering.reformulation.unfolding.QueryUnfolder", "org.mediawiki.sparql.mwontop.utils.SiteSpecificUnfolder" );
 
         OntopSystemConfiguration configuration = OntopSQLOWLAPIConfiguration.defaultBuilder()
                 .dbMetadata( loadDBMetadata( connectionInformation, sitesConfig ) )
@@ -164,7 +166,11 @@ public final class RepositoryFactory {
     private DBMetadata loadDBMetadata( @NonNull MySQLConnectionInformation connectionInformation, @NonNull List<SiteConfig> sitesConfig ) throws SQLException {
         RDBMetadata dbMetadata;
         try ( Connection connection = connectionInformation.withDatabase().createConnection() ) {
-            dbMetadata = RDBMetadataExtractionTools.createMetadata( connection );
+            OntopModelConfiguration build = OntopModelConfiguration.defaultBuilder().build();
+            JdbcTypeMapper typeMapper = build.getInjector().getInstance( JdbcTypeMapper.class );
+            TypeFactory typeFactory = build.getTypeFactory();
+
+            dbMetadata = RDBMetadataExtractionTools.createMetadata( connection, typeFactory, typeMapper);
         }
         QuotedIDFactory qidFactory = dbMetadata.getQuotedIDFactory();
         QuotedID rd_namespace = QuotedID.createIdFromDatabaseRecord( qidFactory, "rd_namespace" );
